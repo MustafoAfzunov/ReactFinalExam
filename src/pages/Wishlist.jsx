@@ -31,12 +31,19 @@ const Wishlist = () => {
                 <p>Your wishlist is empty or no Pokémon match your search.</p>
             ) : (
                 <div className="row">
-                    {filteredWishlist.map((pokemon) => (
-                        <div className="col-md-4 mb-3" key={pokemon.id}>
+                    {filteredWishlist.map((pokemon, index) => (
+                        <div
+                            className="col-md-4 mb-3"
+                            key={`${pokemon.id}-${index}`} // Ensures unique keys
+                        >
                             <div className="card">
-                                <img src={pokemon.sprites.front_default} className="card-img-top" alt={pokemon.name} />
+                                <img
+                                    src={pokemon.sprites.front_default}
+                                    className="card-img-top"
+                                    alt={pokemon.name}
+                                />
                                 <div className="card-body">
-                                    <h5 className="card-title">{pokemon.name}</h5>
+                                    <h5 className="card-title text-capitalize">{pokemon.name}</h5>
                                     <button
                                         className="btn btn-danger"
                                         onClick={() => removeFromWishlist(pokemon)}

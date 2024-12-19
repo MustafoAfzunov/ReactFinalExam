@@ -11,6 +11,10 @@ const shopReducer = (state, action) => {
         case 'REMOVE_FROM_CART':
             return { ...state, cart: state.cart.filter(pokemon => pokemon.id !== action.payload.id) };
         case 'ADD_TO_WISHLIST':
+            // Prevent duplicates in the wishlist
+            if (state.wishlist.some((item) => item.id === action.payload.id)) {
+                return state;
+            }
             return { ...state, wishlist: [...state.wishlist, action.payload] };
         case 'REMOVE_FROM_WISHLIST':
             return { ...state, wishlist: state.wishlist.filter(pokemon => pokemon.id !== action.payload.id) };
@@ -26,6 +30,7 @@ const initialState = {
     wishlist: JSON.parse(localStorage.getItem('wishlist')) || [],
     loading: false,
 };
+
 export const ShopProvider = ({ children }) => {
     const [state, dispatch] = useReducer(shopReducer, initialState);
 
@@ -35,10 +40,13 @@ export const ShopProvider = ({ children }) => {
         const storedWishlist = localStorage.getItem('wishlist');
 
         if (storedCart || storedWishlist) {
-            dispatch({ type: 'INITIALIZE_STATE', payload: {
-                cart: storedCart ? JSON.parse(storedCart) : [],
-                wishlist: storedWishlist ? JSON.parse(storedWishlist) : []
-            } });
+            dispatch({
+                type: 'INITIALIZE_STATE',
+                payload: {
+                    cart: storedCart ? JSON.parse(storedCart) : [],
+                    wishlist: storedWishlist ? JSON.parse(storedWishlist) : [],
+                },
+            });
         }
     }, []);
 
